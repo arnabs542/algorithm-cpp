@@ -65,7 +65,7 @@ int main()
   // testCase = new ArrayStackQueueTest();
   // testCase = new HeapTest();
   // testCase = new BinarySearchTreeTest();
-  // testCase = new GraphTest();
+  testCase = new GraphTest();
   // testCase = new NormalSortAlgo();
   // testCase = new FindKthElement();
   // testCase = new FindPairEqSum();
@@ -89,7 +89,7 @@ int main()
   // testCase = new ActivitySelection();
   // testCase = new LongestPalindromicSubString();
   // testCase = new StringWordDict();
-  testCase = new FrogJump();
+  // testCase = new FrogJump();
   testCase->DoTest();
 
   delete testCase;

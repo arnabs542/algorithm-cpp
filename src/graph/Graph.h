@@ -7,6 +7,8 @@
 #include <queue>
 #include <map>
 #include <algorithm>
+#include <set>
+#include <unordered_set>
 
 #include <testsuit/TestBase.h>
 
@@ -21,7 +23,6 @@ class GraphMatrix
 
   void AddEdge(int from, int to)
   {
-    graphData_[from][to] = 1;
   }
 
  private:
@@ -37,78 +38,49 @@ class GraphList
 
   void AddEdge(int from, int to)
   {
-    list<int> &item = graphData_[from];
-    if (find(item.cbegin(), item.cend(), to) == item.cend())
-    {
-      item.push_back(to);
-    }
+    graphData_[from].push_back(to);
   }
 
   void ShowGraph()
   {
-    cout << "---------ShowGraph Start---------" << endl;
-    for (size_t i = 0; i < graphData_.size(); ++i)
+    int index = 0;
+    for (vector<list<int>>::iterator itVec = graphData_.begin(); itVec != graphData_.end(); ++itVec)
     {
-      cout << i << ", ";
-      for (list<int>::const_iterator it = graphData_[i].cbegin(); it != graphData_[i].cend(); ++it)
+      cout << index++ << " -> ";
+      for (list<int>::iterator itList = itVec->begin(); itList != itVec->end(); ++itList)
       {
-        cout << *it << ", ";
+        cout << *itList << " -> ";
       }
+
       cout << endl;
     }
-    cout << "---------ShowGraph End---------" << endl;
   }
 
   void BFS(int from)
   {
-    queue<int> nodeQueue;
-    map<int, bool> bookmark;
-    for (size_t i = 0; i < graphData_.size(); ++i)
-    {
-      bookmark.insert({i, false});
-    }
-    nodeQueue.push(from);
-    bookmark[from] = true;
-    while (!nodeQueue.empty())
-    {
-      int node = nodeQueue.front();
-      nodeQueue.pop();
-      cout << node << ", ";
-      const list<int> &item = graphData_[node];
-      for (list<int>::const_iterator it = item.cbegin(); it != item.cend(); ++it)
-      {
-        if (bookmark[*it] == false)
-        {
-          nodeQueue.push(*it);
-          bookmark[*it] = true;
-        }
-      }
-    }
-
-    cout << endl;
   }
 
   void DFS(int from)
   {
-    map<int, bool> bookmark;
-    for (size_t i = 0; i < graphData_.size(); ++i)
-    {
-      bookmark.insert({i, false});
-    }
-
+    set<int> bookmark;
     DFSAux(from, bookmark);
     cout << endl;
   }
 
- private:
-  void DFSAux(int from, map<int, bool> &bookmark)
+  bool HasCycle()
   {
-    cout << from << ", ";
-    bookmark[from] = true;
-    list<int> &item = graphData_[from];
-    for (list<int>::const_iterator it = item.cbegin(); it != item.cend(); ++it)
+    return false;
+  }
+
+ private:
+  void DFSAux(int from, set<int> &bookmark)
+  {
+    cout << from << " -> ";
+    bookmark.insert(from);
+    list<int> &ship = graphData_[from];
+    for (auto it = ship.begin(); it != ship.end(); ++it)
     {
-      if (!bookmark[*it])
+      if (bookmark.find(*it) == bookmark.end())
       {
         DFSAux(*it, bookmark);
       }
@@ -133,9 +105,12 @@ class GraphTest: public TestBase
     graphList.AddEdge(2, 0);
     graphList.AddEdge(2, 3);
     graphList.AddEdge(3, 3);
+    cout << "----ShowGraph----" << endl;
     graphList.ShowGraph();
+    cout << "----BFS----" << endl;
     graphList.BFS(2);
-    graphList.DFS(2);
+    cout << "----DFS----" << endl;
+    graphList.DFS(3);
     cout << "=================GraphTest====================" << endl;
   }
 };
