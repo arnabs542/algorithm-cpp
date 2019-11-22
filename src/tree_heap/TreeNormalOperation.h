@@ -15,25 +15,29 @@ class TreeNormalOperation: public TestBase
   void DoTest()
   {
     cout << "=================TreeNormalOperation====================" << endl;
-    TreeNodeT root = {10, nullptr, nullptr};
-    root.left = NewNode(2);
-    root.left->left = NewNode(20);
-    root.left->right = NewNode(1);
-    root.right = NewNode(10);
-    root.right->right = NewNode(-25);
-    root.right->right->left = NewNode(3);
-    root.right->right->right = NewNode(4);
+    TreeNodeT *root = NewNode(10);
+    root->left = NewNode(2);
+    root->left->left = NewNode(20);
+    root->left->right = NewNode(1);
+    root->right = NewNode(10);
+    root->right->right = NewNode(-25);
+    root->right->right->left = NewNode(3);
+    root->right->right->right = NewNode(4);
 
     cout << "PreOrder:" << endl;
-    ShowPreOrder(&root);
+    ShowPreOrder(root);
     cout << endl;
 
     cout << "InOrder:" << endl;
-    ShowInOrder(&root);
+    ShowInOrder(root);
     cout << endl;
 
     cout << "PostOrder:" << endl;
-    ShowPostOrder(&root);
+    ShowPostOrder(root);
+    cout << endl;
+
+    cout << "LevelOrder:" << endl;
+    ShowLevelOrder(root, true);
     cout << endl;
     cout << "=================TreeNormalOperation====================" << endl;
   }
@@ -55,9 +59,9 @@ class TreeNormalOperation: public TestBase
     {
       return;
     }
-    ShowPreOrder(node->left);
+    ShowInOrder(node->left);
     cout << node->value << ", ";
-    ShowPreOrder(node->right);
+    ShowInOrder(node->right);
   }
 
   void ShowPostOrder(TreeNodeT *node)
@@ -66,14 +70,42 @@ class TreeNormalOperation: public TestBase
     {
       return;
     }
-    ShowPreOrder(node->left);
-    ShowPreOrder(node->right);
+    ShowPostOrder(node->left);
+    ShowPostOrder(node->right);
     cout << node->value << ", ";
   }
 
-  void ShowLevelOrder(TreeNodeT *node, bool levelFormat)
+  void ShowLevelOrder(TreeNodeT *node, bool pretty = false)
   {
+    queue<TreeNodeT *> q;
+    q.push(node);
+    while(!q.empty())
+    {
+      int size = q.size();
+      while (size != 0)
+      {
+        node = q.front();
+        q.pop();
+        cout << node->value << ", ";
+        if (node->left)
+        {
+          q.push(node->left);
+        }
 
+        if (node->right)
+        {
+          q.push(node->right);
+        }
+        --size;
+      }
+
+      if (pretty)
+      {
+        cout << endl;
+      }
+    }
+
+    cout << endl;
   }
 
   TreeNodeT * NewNode(int value)
