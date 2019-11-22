@@ -58,6 +58,26 @@ class GraphList
 
   void BFS(int from)
   {
+    queue<int> q;
+    unordered_set<int> bookmark;
+    q.push(from);
+    bookmark.insert(from);
+    while (!q.empty())
+    {
+      int node = q.front();
+      cout << node << " -> ";
+      q.pop();
+      for (auto it = graphData_[node].begin(); it != graphData_[node].end(); ++it)
+      {
+        if (bookmark.find(*it) == bookmark.end())
+        {
+          q.push(*it);
+          bookmark.insert(*it);
+        }
+      }
+    }
+
+    cout << endl;
   }
 
   void DFS(int from)
@@ -69,10 +89,46 @@ class GraphList
 
   bool HasCycle()
   {
+    unordered_set<int> visited;
+    unordered_set<int> edgeNode;
+    int index = 0;
+    for (auto it = graphData_.begin(); it != graphData_.end(); ++it)
+    {
+      if (HasCycleAux(index, visited, edgeNode))
+      {
+        return true;
+      }
+      ++index;
+    }
+
     return false;
   }
 
  private:
+  bool HasCycleAux(int node, unordered_set<int> &visited, unordered_set<int> &edgeNode)
+  {
+    if (visited.count(node) == 0)
+    {
+      visited.insert(node);
+      edgeNode.insert(node);
+      for (auto it = graphData_[node].begin(); it != graphData_[node].end(); ++it)
+      {
+        if (visited.count(*it) == 0 && HasCycleAux(*it, visited, edgeNode))
+        {
+          return true;
+        }
+        else if (edgeNode.count(*it) != 0)
+        {
+          return true;
+        }
+      }
+
+      edgeNode.erase(node);
+    }
+
+    return false;
+  }
+
   void DFSAux(int from, set<int> &bookmark)
   {
     cout << from << " -> ";
@@ -110,7 +166,7 @@ class GraphTest: public TestBase
     cout << "----BFS----" << endl;
     graphList.BFS(2);
     cout << "----DFS----" << endl;
-    graphList.DFS(3);
+    graphList.DFS(2);
     cout << "=================GraphTest====================" << endl;
   }
 };
