@@ -22,6 +22,7 @@
 #include <tree_heap/BinarySearchTree.h>
 #include <tree_heap/FindMinimumDepthOfBinaryTree.h>
 #include <tree_heap/FindMaxPathSumInBinaryTree.h>
+#include <tree_heap/TreeNormalOperation.h>
 #include <sort_search/NormalSearchAlgo.h>
 #include <sort_search/NormalSortAlgo.h>
 #include <sort_search/FindKthElement.h>
@@ -30,6 +31,8 @@
 #include <linkedlist/ReverseLinkedList.h>
 #include <linkedlist/LinkedListSortByMergeSort.h>
 #include <linkedlist/MergeTwoSortedLinkedList.h>
+#include <linkedlist/MergeTwoLinkedListAlternate.h>
+#include <linkedlist/DetectLoopAndRemove.h>
 #include <bit_manipulation/FindMaxSubArrayXor.h>
 #include <bit_manipulation/FindNthMagicNumber.h>
 #include <string_array/ReverseString.h>
@@ -65,17 +68,20 @@ int main()
   // testCase = new ArrayStackQueueTest();
   // testCase = new HeapTest();
   // testCase = new BinarySearchTreeTest();
-  testCase = new GraphTest();
+  // testCase = new GraphTest();
   // testCase = new NormalSortAlgo();
   // testCase = new FindKthElement();
   // testCase = new FindPairEqSum();
   // testCase = new FindPairSumClosest();
   // testCase = new NormalSearchAlgo();
   // testCase = new FindMinimumDepthOfBinaryTree();
-  // testCase = new BinaryTreeTest();
+  testCase = new BinaryTreeTest();
+  testCase->DoTest();
   // testCase = new ReverseLinkedList();
+  // testCase = new DetectLoopAndRemove();
   // testCase = new MergeTwoSortedLinkedList();
   // testCase = new LinkedListSortByMergeSort();
+  testCase = new TreeNormalOperation();
   // testCase = new FindNthMagicNumber();
   // testCase = new ReverseString();
   // testCase = new FindLongestSubString();
@@ -90,6 +96,8 @@ int main()
   // testCase = new LongestPalindromicSubString();
   // testCase = new StringWordDict();
   // testCase = new FrogJump();
+  // testCase = new MergeTwoLinkedListAlternate();
+
   testCase->DoTest();
 
   delete testCase;
