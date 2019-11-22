@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <queue>
+#include <algorithm>
 
 #include <testsuit/TestBase.h>
 

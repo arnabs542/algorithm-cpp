@@ -41,7 +41,7 @@ class LinkedList
   {
     ListNodeT *listNode1 = head_->next;
     ListNodeT *listNode2 = sortedListHead->next;
-    ListNodeT dummy;
+    ListNodeT dummy = {0, nullptr};
     ListNodeT *tail = &dummy;
     dummy.next = nullptr;
     while (true)
@@ -81,22 +81,18 @@ class LinkedList
 
   void Reverse()
   {
-    if (!head_->next)
+    ListNodeT *curNode = head_->next;
+    ListNodeT *prevNode = nullptr;
+    ListNodeT *nextNode = nullptr;
+    while (curNode)
     {
-      return;
-    }
-    ListNodeT *cur = head_->next;
-    ListNodeT *prev = nullptr;
-    ListNodeT *next = nullptr;
-    while (cur)
-    {
-      next = cur->next;
-      cur->next = prev;
-      prev = cur;
-      cur = next;
+      nextNode = curNode->next;
+      curNode->next = prevNode;
+      prevNode = curNode;
+      curNode = nextNode;
     }
 
-    head_->next = prev;
+    head_->next = prevNode;
   }
 
   void MergeSort()
@@ -104,21 +100,22 @@ class LinkedList
     MergeSortAux(&(head_->next));
   }
 
-  void FindMiddle(ListNodeT **middleNode)
+  void SplitList(ListNodeT *leftFirst, ListNodeT **rightFirst)
   {
-    ListNodeT *slow = head_->next;
-    ListNodeT *fast = head_->next;
+    ListNodeT *slow = leftFirst;
+    ListNodeT *fast = leftFirst;
     while (fast)
     {
       fast = fast->next;
-      if (fast && fast->next)
+      if (fast and fast->next)
       {
-        slow = slow->next;
         fast = fast->next;
+        slow = slow->next;
       }
     }
 
-    *middleNode = slow;
+    *rightFirst = slow->next;
+    slow->next = nullptr;
   }
 
   void Show()
@@ -127,25 +124,75 @@ class LinkedList
     Show(curNode);
   }
 
-  void SplitList(ListNodeT *startNode, ListNodeT **rightStartNode)
+  void MergeLinkedListAlternate(ListNodeT *linkedHead)
   {
-    ListNodeT *fast = startNode;
-    ListNodeT *slow = startNode;
-    while (fast)
+    ListNodeT *curNode = head_->next;
+    ListNodeT *curNodeNext = nullptr;
+    ListNodeT *linkedNodeNext = nullptr;
+    while (curNode && linkedHead)
     {
-      fast = fast->next;
-      if (fast && fast->next)
-      {
-        fast = fast->next;
-        slow = slow->next;
-      }
-    }
+      curNodeNext = curNode->next;
+      linkedNodeNext = linkedHead->next;
 
-    *rightStartNode = slow->next;
-    slow->next = nullptr;
+      curNode->next = linkedHead;
+      linkedHead->next = curNodeNext;
+
+      curNode = curNodeNext;
+      linkedHead = linkedNodeNext;
+    }
   }
 
  private:
+  void MergeSortAux(ListNodeT **nodeaddr)
+  {
+    ListNodeT *node = *nodeaddr;
+    if (!node->next)
+    {
+      return;
+    }
+
+    ListNodeT *middleNode;
+    SplitList(node, &middleNode);
+    MergeSortAux(&node);
+    MergeSortAux(&middleNode);
+
+    ListNodeT dummy = {0, nullptr};
+    ListNodeT *currentNode = &dummy;
+    while (node || middleNode)
+    {
+      if (!node)
+      {
+        currentNode->next = middleNode;
+        currentNode = currentNode->next;
+        middleNode = middleNode->next;
+        continue;
+      }
+
+      if (!middleNode)
+      {
+        currentNode->next = node;
+        currentNode = currentNode->next;
+        node = node->next;
+        continue;
+      }
+
+      if (node->value > middleNode->value)
+      {
+        currentNode->next = middleNode;
+        currentNode = currentNode->next;
+        middleNode = middleNode->next;
+      }
+      else
+      {
+        currentNode->next = node;
+        currentNode = currentNode->next;
+        node = node->next;
+      }
+    }
+
+    *nodeaddr = dummy.next;
+  }
+
   void Show(ListNodeT *curNode)
   {
     while (curNode)
@@ -157,60 +204,6 @@ class LinkedList
     cout << endl;
   }
 
-  void MergeSortAux(ListNodeT **node)
-  {
-    ListNodeT *curNode = *node;
-    if (!curNode || !curNode->next)
-    {
-      return;
-    }
-
-    ListNodeT *rightStartNode = nullptr;
-    SplitList(curNode, &rightStartNode);
-    MergeSortAux(&curNode);
-    MergeSortAux(&rightStartNode);
-    Merge(&curNode, rightStartNode);
-    *node = curNode;
-  }
-
-  void Merge(ListNodeT **node1, ListNodeT *node2)
-  {
-    ListNodeT *startNode = *node1;
-    ListNodeT dummy;
-    ListNodeT *curNode = &dummy;
-    while (startNode && node2)
-    {
-      if (startNode->value > node2->value)
-      {
-        curNode->next = node2;
-        node2 = node2->next;
-        curNode = curNode->next;
-      }
-      else
-      {
-        curNode->next = startNode;
-        startNode = (startNode)->next;
-        curNode = curNode->next;
-      }
-    }
-
-    while (startNode)
-    {
-      curNode->next = startNode;
-      startNode = (startNode)->next;
-      curNode = curNode->next;
-    }
-
-    while (node2)
-    {
-      curNode->next = node2;
-      node2 = node2->next;
-      curNode = curNode->next;
-    }
-
-    *node1 = dummy.next;
-    Show(dummy.next);
-  }
 
  private:
   ListNodeT *head_;
